@@ -13,7 +13,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var operatorLabel: UILabel!
     
     var stackNumber1: Int = 0
-    var stackNumber2: Int = 0
     var justPressedOperator: Bool = false
     
     func applyOperation(myOperator: String, nb1: Int, nb2: Int) -> Int {
@@ -25,6 +24,9 @@ class ViewController: UIViewController {
         case "x":
             return nb1 * nb2
         case "/":
+            guard nb2 != 0 else {
+                return 9999999999999
+            }
             return nb1 / nb2
         default:
             return 0
@@ -63,7 +65,7 @@ class ViewController: UIViewController {
     @IBAction func operation(_ sender: Any) {
         /*
          * Put operator pressed in operatorLabel.
-         * TODO-If already one there, process it (like pressing equals) and store new operator
+         * If already one there, process it (like pressing equals) and store new operator
          */
         
         // Get an operator and apply it in operatorLabel
@@ -83,7 +85,7 @@ class ViewController: UIViewController {
             operatorLabel.text = text
             resultLabel.text = String(applyOperation(myOperator: opLabel, nb1: stackNumber1, nb2: number))
         }
-        self.stackNumber1 = number
+        self.stackNumber1 = Int(resultLabel.text ?? "") ?? 0
         justPressedOperator = true
     }
     
@@ -107,6 +109,7 @@ class ViewController: UIViewController {
          * The result is put in resultLabel
          * stackNumber1 is set to currentNumber ('9' '+' '6' '=' (21) '=' (27))
          */
+        justPressedOperator = true
         guard let currentOperator = operatorLabel.text else {
             return
         }
@@ -123,12 +126,6 @@ class ViewController: UIViewController {
     }
     
     @IBAction func pressClear(_ sender: Any) {
-        guard let resLabel = resultLabel, let opLabel = operatorLabel else {
-            return
-        }
-        resLabel.text = "0"
-        opLabel.text = nil
-        stackNumber1 = 0
-        justPressedOperator = false
+        self.viewDidLoad()
     }
 }
