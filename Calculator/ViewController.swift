@@ -94,6 +94,9 @@ class ViewController: UIViewController {
     }
     
     @IBAction func pressEqual(_ sender: Any) {
+        /* 
+         * Does not work
+         */
         justPressedOperator = true
         guard let currentOperator = operatorLabel.text else {
             return
@@ -113,17 +116,12 @@ class ViewController: UIViewController {
     }
     
     @IBAction func pressClear(_ sender: Any) {
-        guard let currentNumber = resultLabel.text else {
+        guard let resLabel = resultLabel, let opLabel = operatorLabel else {
             return
         }
-        let len = currentNumber.characters.count
-        if len == 0 {
-            return
-        } else if len == 1 {
-            resultLabel.text = "0"
-        } else {
-            //let index = currentNumber.index(currentNumber.startIndex, offsetBy: currentNumber.endIndex - 2)
-            //currentNumber.substring(to: index)
-        }
+        resLabel.text = "0"
+        opLabel.text = nil
+        stackNumber = 0
+        justPressedOperator = false
     }
 }
