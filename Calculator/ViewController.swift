@@ -61,23 +61,37 @@ class ViewController: UIViewController {
     
     @IBAction func operation(_ sender: Any) {
         // Get an operator and apply it in operatorLabel
-        guard let button = sender as? UIButton else {
+        guard let button = sender as? UIButton, let text = button.titleLabel?.text else {
             return
         }
-        guard let text = button.titleLabel?.text else {
-            return
-        }
-        // Put operator in interface
-        operatorLabel.text = text
+        
         // Set boolean to true : next time we press number, should empty result
+        
+        if(justPressedOperator) {
+            // Put operator in interface
+            operatorLabel.text = text
+            return
+        }
         justPressedOperator = true
         
         // Refresh result
-        guard let number = Int(resultLabel.text!) else {
+        guard let resLabel = resultLabel.text, let number = Int(resLabel) else {
             return
         }
         if stackNumber != 0 {
-            resultLabel.text = String(applyOperation(myOperator: text, nb1: stackNumber, nb2: number))
+            // Two cases, previous operator to apply or not
+            guard let opLabel = operatorLabel.text else {
+                return
+            }
+            if opLabel != "" {
+                resultLabel.text = String(applyOperation(myOperator: opLabel, nb1: stackNumber, nb2: number))
+                operatorLabel.text = text
+            } else {
+                operatorLabel.text = text
+                resultLabel.text = String(applyOperation(myOperator: opLabel, nb1: stackNumber, nb2: number))
+            }
+            self.stackNumber = number
+
         }
     }
     
