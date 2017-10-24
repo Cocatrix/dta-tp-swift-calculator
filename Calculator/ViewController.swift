@@ -12,7 +12,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var resultLabel: UILabel!
     @IBOutlet weak var operatorLabel: UILabel!
     
-    var stackNumber: Int?
+    var stackNumber: Int = 0
     var justPressedOperator: Bool = false
     
     func applyOperation(myOperator: String, nb1: Int, nb2: Int) -> Int {
@@ -76,11 +76,8 @@ class ViewController: UIViewController {
         guard let number = Int(resultLabel.text!) else {
             return
         }
-        if let currentNumber = stackNumber {
-            resultLabel.text = String(applyOperation(myOperator: text, nb1: currentNumber, nb2: number))
-            stackNumber = currentNumber
-        } else {
-            stackNumber = number
+        if stackNumber != 0 {
+            resultLabel.text = String(applyOperation(myOperator: text, nb1: stackNumber, nb2: number))
         }
     }
     
@@ -104,14 +101,13 @@ class ViewController: UIViewController {
         if(currentOperator == "") {
             return
         } else {
-            if let stackedNumber = stackNumber {
-                guard let currentNumber = resultLabel.text else {
-                    return
-                }
-                resultLabel.text = String(applyOperation(myOperator: currentOperator,nb1: stackedNumber,nb2: Int(currentNumber)!))
-                operatorLabel.text = ""
-                stackNumber = 0
+
+            guard let currentNumber = resultLabel.text else {
+                return
             }
+            resultLabel.text = String(applyOperation(myOperator: currentOperator, nb1: stackNumber, nb2: Int(currentNumber)!))
+            operatorLabel.text = nil
+            stackNumber = 0
             
         }
     }
