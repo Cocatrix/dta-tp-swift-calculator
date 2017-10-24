@@ -12,7 +12,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var resultLabel: UILabel!
     @IBOutlet weak var operatorLabel: UILabel!
     
-    var stackNumber: Int = 0
+    var stackNumber1: Int = 0
+    var stackNumber2: Int = 0
     var justPressedOperator: Bool = false
     
     func applyOperation(myOperator: String, nb1: Int, nb2: Int) -> Int {
@@ -66,38 +67,24 @@ class ViewController: UIViewController {
          */
         
         // Get an operator and apply it in operatorLabel
-        guard let button = sender as? UIButton, let text = button.titleLabel?.text else {
+        guard let button = sender as? UIButton, let text = button.titleLabel?.text, let opLabel = operatorLabel.text, let resLabel = resultLabel.text, let number = Int(resLabel.trimmingCharacters(in: .whitespaces)) else {
             return
         }
-        
-        // Set boolean to true : next time we press number, should empty result
-        
-        if(justPressedOperator) {
-            // Put operator in interface
+        /* If we pressed operator just before
+         if(justPressedOperator) {
+         // Put operator in interface
+         operatorLabel.text = text
+         return
+         }*/
+        if opLabel != "" {
+            resultLabel.text = String(applyOperation(myOperator: opLabel, nb1: stackNumber1, nb2: number))
             operatorLabel.text = text
-            return
+        } else {
+            operatorLabel.text = text
+            resultLabel.text = String(applyOperation(myOperator: opLabel, nb1: stackNumber1, nb2: number))
         }
+        self.stackNumber1 = number
         justPressedOperator = true
-        
-        // Refresh result
-        guard let resLabel = resultLabel.text, let number = Int(resLabel.trimmingCharacters(in: .whitespaces)) else {
-            return
-        }
-        if stackNumber != 0 {
-            // Two cases, previous operator to apply or not
-            guard let opLabel = operatorLabel.text else {
-                return
-            }
-            if opLabel != "" {
-                resultLabel.text = String(applyOperation(myOperator: opLabel, nb1: stackNumber, nb2: number))
-                operatorLabel.text = text
-            } else {
-                operatorLabel.text = text
-                resultLabel.text = String(applyOperation(myOperator: opLabel, nb1: stackNumber, nb2: number))
-            }
-            self.stackNumber = number
-
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -115,10 +102,10 @@ class ViewController: UIViewController {
     @IBAction func pressEqual(_ sender: Any) {
         /* 
          * Executes operation in operatorLabel on numbers :
-         * - stackNumber (entered before hitting operatorLabel)
+         * - stackNumber1 (entered before hitting operatorLabel)
          * - currentNumber (now in resultLabel)
          * The result is put in resultLabel
-         * stackNumber is set to currentNumber ('9' '+' '6' '=' (21) '=' (27))
+         * stackNumber1 is set to currentNumber ('9' '+' '6' '=' (21) '=' (27))
          */
         guard let currentOperator = operatorLabel.text else {
             return
@@ -129,9 +116,9 @@ class ViewController: UIViewController {
             guard let currentNumber = resultLabel.text else {
                 return
             }
-            resultLabel.text = String(applyOperation(myOperator: currentOperator, nb1: stackNumber, nb2: Int(currentNumber)!))
+            resultLabel.text = String(applyOperation(myOperator: currentOperator, nb1: stackNumber1, nb2: Int(currentNumber)!))
             operatorLabel.text = ""
-            stackNumber = Int(currentNumber) ?? 0
+            stackNumber1 = Int(currentNumber) ?? 0
         }
     }
     
@@ -141,7 +128,7 @@ class ViewController: UIViewController {
         }
         resLabel.text = "0"
         opLabel.text = nil
-        stackNumber = 0
+        stackNumber1 = 0
         justPressedOperator = false
     }
 }
