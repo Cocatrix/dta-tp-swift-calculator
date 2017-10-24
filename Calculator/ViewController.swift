@@ -13,6 +13,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var operatorLabel: UILabel!
     
     var stackNumber: Int?
+    var justPressedOperator: Bool = false
     
     func applyOperation(myOperator: String, nb1: Int, nb2: Int) -> Int {
         switch myOperator {
@@ -20,11 +21,13 @@ class ViewController: UIViewController {
             return nb1 + nb2
         case "-":
             return nb1 - nb2
+        case "x":
+            return nb1 * nb2
+        case "/":
+            return nb1 / nb2
         default:
             return 0
         }
-        
-        
     }
     
     @IBAction func didPressButton(_ sender: Any) {
@@ -36,8 +39,9 @@ class ViewController: UIViewController {
             return
         }
         let resLabel = resultLabel.text
-        if resLabel == "0" {
+        if justPressedOperator || resLabel == "0" {
             resultLabel.text = text
+            justPressedOperator = false
         } else {
             resultLabel.text = (resultLabel.text ?? "") + text
         }
@@ -56,7 +60,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func operation(_ sender: Any) {
-        // Get an operator and apply it in operandLabel
+        // Get an operator and apply it in operatorLabel
         guard let button = sender as? UIButton else {
             return
         }
@@ -65,6 +69,8 @@ class ViewController: UIViewController {
         }
         // Put operator in interface
         operatorLabel.text = text
+        // Set boolean to true : next time we press number, should empty result
+        justPressedOperator = true
         
         // Refresh result
         guard let number = Int(resultLabel.text!) else {
@@ -78,7 +84,20 @@ class ViewController: UIViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.resultLabel.alpha = 0
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        UILabel.animate(withDuration: 2) {
+            self.resultLabel.alpha = 1
+        }
+    }
+    
     @IBAction func pressEqual(_ sender: Any) {
+        justPressedOperator = true
         guard let currentOperator = operatorLabel.text else {
             return
         }
@@ -91,10 +110,24 @@ class ViewController: UIViewController {
                 }
                 resultLabel.text = String(applyOperation(myOperator: currentOperator,nb1: stackedNumber,nb2: Int(currentNumber)!))
                 operatorLabel.text = ""
+                stackNumber = 0
             }
             
         }
     }
     
+    @IBAction func pressClear(_ sender: Any) {
+        guard let currentNumber = resultLabel.text else {
+            return
+        }
+        let len = currentNumber.characters.count
+        if len == 0 {
+            return
+        } else if len == 1 {
+            resultLabel.text = "0"
+        } else {
+            //let index = currentNumber.index(currentNumber.startIndex, offsetBy: currentNumber.endIndex - 2)
+            //currentNumber.substring(to: index)
+        }
+    }
 }
-
