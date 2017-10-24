@@ -60,6 +60,11 @@ class ViewController: UIViewController {
     }
     
     @IBAction func operation(_ sender: Any) {
+        /*
+         * Put operator pressed in operatorLabel.
+         * TODO-If already one there, process it (like pressing equals) and store new operator
+         */
+        
         // Get an operator and apply it in operatorLabel
         guard let button = sender as? UIButton, let text = button.titleLabel?.text else {
             return
@@ -75,7 +80,7 @@ class ViewController: UIViewController {
         justPressedOperator = true
         
         // Refresh result
-        guard let resLabel = resultLabel.text, let number = Int(resLabel) else {
+        guard let resLabel = resultLabel.text, let number = Int(resLabel.trimmingCharacters(in: .whitespaces)) else {
             return
         }
         if stackNumber != 0 {
@@ -109,23 +114,24 @@ class ViewController: UIViewController {
     
     @IBAction func pressEqual(_ sender: Any) {
         /* 
-         * Does not work
+         * Executes operation in operatorLabel on numbers :
+         * - stackNumber (entered before hitting operatorLabel)
+         * - currentNumber (now in resultLabel)
+         * The result is put in resultLabel
+         * stackNumber is set to currentNumber ('9' '+' '6' '=' (21) '=' (27))
          */
-        justPressedOperator = true
         guard let currentOperator = operatorLabel.text else {
             return
         }
-        if(currentOperator == "") {
+        if(currentOperator == "") { // No operation to do yet
             return
         } else {
-
             guard let currentNumber = resultLabel.text else {
                 return
             }
             resultLabel.text = String(applyOperation(myOperator: currentOperator, nb1: stackNumber, nb2: Int(currentNumber)!))
-            operatorLabel.text = nil
-            stackNumber = 0
-            
+            operatorLabel.text = ""
+            stackNumber = Int(currentNumber) ?? 0
         }
     }
     
