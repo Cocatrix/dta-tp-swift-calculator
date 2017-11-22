@@ -11,10 +11,10 @@ import UIKit
 class ViewController: UIViewController {
     @IBOutlet weak var resultLabel: UILabel!
     @IBOutlet weak var operatorLabel: UILabel!
-    
+
     var stackNumber1: Int = 0
     var justPressedOperator: Bool = false
-    
+
     func applyOperation(myOperator: String, nb1: Int, nb2: Int) -> Int {
         switch myOperator {
         case "+":
@@ -25,14 +25,14 @@ class ViewController: UIViewController {
             return nb1 * nb2
         case "/":
             guard nb2 != 0 else {
-                return 9999999999999
+                return 9999999
             }
             return nb1 / nb2
         default:
             return 0
         }
     }
-    
+
     @IBAction func didPressButton(_ sender: Any) {
         // Get a clicked number and add it in resultLabel
         guard let button = sender as? UIButton else {
@@ -49,27 +49,32 @@ class ViewController: UIViewController {
             resultLabel.text = (resultLabel.text ?? "") + text
         }
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.resultLabel.text = "0"
         self.operatorLabel.text = ""
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
     @IBAction func operation(_ sender: Any) {
         /*
          * Put operator pressed in operatorLabel.
          * If already one there, process it (like pressing equals) and store new operator
          */
-        
         // Get an operator and apply it in operatorLabel
-        guard let button = sender as? UIButton, let text = button.titleLabel?.text, let opLabel = operatorLabel.text, let resLabel = resultLabel.text, let number = Int(resLabel.trimmingCharacters(in: .whitespaces)) else {
+        guard let button = sender as? UIButton, let text = button.titleLabel?.text else {
+            return
+        }
+        guard let opLabel = operatorLabel.text, let resLabel = resultLabel.text else {
+            return
+        }
+        guard let number = Int(resLabel.trimmingCharacters(in: .whitespaces)) else {
             return
         }
         /* If we pressed operator just before
@@ -88,19 +93,19 @@ class ViewController: UIViewController {
         self.stackNumber1 = Int(resultLabel.text ?? "") ?? 0
         justPressedOperator = true
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.resultLabel.alpha = 0
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         UILabel.animate(withDuration: 2) {
             self.resultLabel.alpha = 1
         }
     }
-    
+
     @IBAction func pressEqual(_ sender: Any) {
         /* 
          * Executes operation in operatorLabel on numbers :
@@ -110,10 +115,20 @@ class ViewController: UIViewController {
          * stackNumber1 is set to currentNumber ('9' '+' '6' '=' (21) '=' (27))
          */
         justPressedOperator = true
+        let env = Bundle.main.infoDictionary!["Equal button color"] as! String // swiftlint:disable:this force_cast
+        guard let button = sender as? UIButton else {
+            return
+        }
+        if env == "BLUE" {
+            button.backgroundColor = UIColor.blue
+        } else if env == "RED" {
+            button.backgroundColor = UIColor.red
+        }
+        
         guard let currentOperator = operatorLabel.text else {
             return
         }
-        if(currentOperator == "") { // No operation to do yet
+        if currentOperator == "" { // No operation to do yet
             return
         } else {
             guard let currentNumber = resultLabel.text else {
@@ -124,7 +139,7 @@ class ViewController: UIViewController {
             stackNumber1 = Int(currentNumber) ?? 0
         }
     }
-    
+
     @IBAction func pressClear(_ sender: Any) {
         self.viewDidLoad()
     }

@@ -9,8 +9,8 @@
 import Foundation
 import UIKit
 
-class RoundedButton : UIButton {
-    
+class RoundedButton: UIButton {
+
     override func layoutSubviews() {
         super.layoutSubviews()
         self.layer.cornerRadius = self.frame.width/2
