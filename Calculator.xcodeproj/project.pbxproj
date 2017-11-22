@@ -647,6 +647,7 @@
 			baseConfigurationReference = C8C0BAE1430BC04879140632 /* Pods-Calculator.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = K4BW9785S4;
 				INFOPLIST_FILE = Calculator/Info.plist;
@@ -664,6 +665,7 @@
 			baseConfigurationReference = 654D1AECFC717F6F968D4C5B /* Pods-Calculator.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = K4BW9785S4;
 				INFOPLIST_FILE = Calculator/Info.plist;
